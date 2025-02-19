@@ -2,7 +2,7 @@
 //  GameViewController.swift
 //  NinjaGameBase
 //
-//  Created by Game of Apps on 2025-02-17.
+//  Created by Feb 2025
 //
 
 import UIKit
@@ -15,12 +15,8 @@ class GameViewController: UIViewController {
         super.viewDidLoad()
         
         if let view = self.view as! SKView? {
-            // Load the SKScene from 'GameScene.sks'
             if let scene = SKScene(fileNamed: "GameScene") {
-                // Set the scale mode to scale to fit the window
                 scene.scaleMode = .aspectFill
-                
-                // Present the scene
                 view.presentScene(scene)
             }
             
