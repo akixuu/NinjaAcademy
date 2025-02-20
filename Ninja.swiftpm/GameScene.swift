@@ -1,6 +1,6 @@
 //
 //  GameScene.swift
-//  NinjaGameBase
+//  Ninja
 //
 //  Created by Aki Xu on Feb 2025.
 //
@@ -56,7 +56,7 @@ class GameScene: SKScene {
                 if enemyType == "heart" {
                     // hearts don't hurt but you lose it sooo
                     // TODO: play cool animation?
-                    showDialogue(text: "Oh no! You missed the heart...")
+                    showDialogue(text: "Oh no! You missed it...")
                 } else {
                     
                     lives -= 1
@@ -65,7 +65,7 @@ class GameScene: SKScene {
                         gameOver()
                         // TODO: ninja is dead, add appropriate frame
                     } else {
-                        let dialogue = ["Oof! Be careful!", "Careful, little one!", "Watch out!"].randomElement() ?? "Ouch!"
+                        let dialogue = ["Are you alright, young warrior?", "Careful, young warrior!", "Watch out, young warrior!"].randomElement() ?? ""
                         showDialogue(text: dialogue)
                         // TODO: play ninja oof sound + appropriate frame , if possible
                     }
@@ -96,7 +96,14 @@ class GameScene: SKScene {
                             } else {
                                 enemiesKilled += 1
                                 if enemiesKilled % 11 == 0 && enemiesKilled != 0 {
-                                    let dialogue  = ["Yes!!! You are doing amazing!", "You are the pride of our clan!", "You are on fire!", "You're unstoppable!", "Remember your training!", "Watch out, they get faster!", "Victory comes at a 100 exorcisms...", "Sensei is getting nostalgic... Ho ho ho!"].randomElement()
+                                    var dialogue: String?
+                                    // TODO: change dialog boxes after a certain amt of time
+                                    if timeAlive>45 {
+                                        dialogue  = ["You are the pride of our clan!", "You are on fire!", "Remember your training!", "Watch out, they get faster!", "Victory comes at a 100 exorcisms...", "Sensei is thrilled!", "Sensei is getting nostalgic... Ho ho ho!"].randomElement()
+                                    } else {
+                                        dialogue = ["You are a worthy opponent!", "You are on fire!", "Remember your training!", "Watch out, they get faster!", "Victory comes at a 100 exorcisms...", "Sensei is thrilled!", "Sensei is getting nostalgic... Ho ho ho!"].randomElement()
+                                    }
+                                    
                                     showDialogue(text: dialogue ?? "")
                                 }
                                 if enemiesKilled % 25 == 0 && enemiesKilled != 0 {
@@ -185,14 +192,14 @@ class GameScene: SKScene {
 
     func addNinja() {
         ninja = SKSpriteNode(imageNamed: "ninja")
-        ninja.position = CGPoint(x: 300, y: self.size.height / 2 + horizonLevelOffset)
+        ninja.position = CGPoint(x: 150, y: self.size.height / 2 + horizonLevelOffset)
         ninja.zPosition = 1
         addChild(ninja)
     }
 
     func addLabels() {
         scoreLabel = SKLabelNode(text: "Enemies Killed: 0")
-        scoreLabel.position = CGPoint(x: self.size.width - 200, y: self.size.height - 50)
+        scoreLabel.position = CGPoint(x: self.size.width - 25, y: self.size.height - 50)
         scoreLabel.fontSize = 24
         scoreLabel.fontColor = .white
         scoreLabel.horizontalAlignmentMode = .right
@@ -200,7 +207,7 @@ class GameScene: SKScene {
         addChild(scoreLabel)
         
         timeLabel = SKLabelNode(text: "Time Alive: 0")
-        timeLabel.position = CGPoint(x: self.size.width - 200, y: self.size.height - 100)
+        timeLabel.position = CGPoint(x: self.size.width - 25, y: self.size.height - 100)
         timeLabel.fontSize = 24
         timeLabel.fontColor = .white
         timeLabel.horizontalAlignmentMode = .right
@@ -218,14 +225,14 @@ class GameScene: SKScene {
         dialogueLabel = SKLabelNode(text: "")
         dialogueLabel.fontSize = 24
         dialogueLabel.fontColor = .white
-        dialogueLabel.fontName = "Arial-Bold"
+        dialogueLabel.fontName = "Chalkduster"
         dialogueLabel.position = CGPoint(x: ninja.position.x, y: ninja.position.y + 100)
         dialogueLabel.alpha = 0 // init hidden
         addChild(dialogueLabel)
     }
     
     func showDialogue(text: String) {
-        dialogueLabel.text = text
+        dialogueLabel.text = "Sensei: " + text
         dialogueLabel.removeAllActions()
         let fadeIn = SKAction.fadeIn(withDuration: 0.1)
         let wait = SKAction.wait(forDuration: 3)
@@ -238,7 +245,7 @@ class GameScene: SKScene {
     
     func playBackgroundMusic() {
         // FIXME: add bg music, stop when game over and play appropriate music
-        let backgroundMusic = SKAudioNode(fileNamed: "bg-music.mp3")
+        let backgroundMusic = SKAudioNode(fileNamed: "music-game.mp3")
         backgroundMusic.autoplayLooped = true
         addChild(backgroundMusic)
     }
@@ -249,7 +256,8 @@ class GameScene: SKScene {
         let availableEnemyTypes = ["fire", "water", "earth", "air", "dark", "light"]
         let enemy: SKSpriteNode
         
-        if lives < 3 && (enemiesKilled % 30 == 0) && enemiesKilled != 0 && enemiesKilled != lastHeartSpawnedAt {
+        if lives < 3 && (enemiesKilled % 10 == 0) && enemiesKilled != 0 && lastHeartSpawnedAt != enemiesKilled {
+            showDialogue(text: "Sensei has sent you a recovery heart!")
             enemy = SKSpriteNode(imageNamed: "heart")
             enemy.userData = ["type": "heart"]
             lastHeartSpawnedAt = enemiesKilled

@@ -5,9 +5,12 @@ struct ContentView: View {
     @EnvironmentObject var appModel: AppModel
 
     var body: some View {
-        ZStack {
-            SpriteView(scene: GameScene.scene)
-            .overlay(alignment: .topLeading) {
+        VStack {
+            SpriteView(scene: IntroductionScene(size:UIScreen.main.bounds.size))
+                .ignoresSafeArea()
+        }
+        .overlay(alignment: .topLeading) {
+            if appModel.gameStarted {
                 camera()
                     .frame(width: 400, height: 300)
                     .padding()

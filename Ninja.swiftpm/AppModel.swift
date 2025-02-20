@@ -15,6 +15,8 @@ final class AppModel: ObservableObject {
         }
     }
     
+    @Published var gameStarted = false
+    
     @Published var defaultMLModel: JutsuPoseMLModel?
     @Published var availableHandPoseMLModels = Set<JutsuPoseMLModel>()
     
