@@ -8,6 +8,14 @@
 import SpriteKit
 
 class GameScene: SKScene {
+    
+    static private var _scene: SKScene!
+    static var scene: SKScene {
+        if _scene == nil {
+            _scene = SKScene(fileNamed: "GameScene")
+        }
+        return _scene
+    }
 
     var ninja: SKSpriteNode!
     var enemies: [SKSpriteNode] = []
