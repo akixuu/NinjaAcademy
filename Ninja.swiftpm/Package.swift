@@ -29,6 +29,9 @@ let package = Package(
             supportedInterfaceOrientations: [
                 .landscapeRight,
                 .landscapeLeft
+            ],
+            capabilities: [
+                .camera(purposeString: "This sample app uses the camera.")
             ]
         )
     ],
@@ -42,5 +45,5 @@ let package = Package(
             ]
         )
     ],
-    swiftLanguageVersions: [.v6]
+    swiftLanguageVersions: [.v5]
 )

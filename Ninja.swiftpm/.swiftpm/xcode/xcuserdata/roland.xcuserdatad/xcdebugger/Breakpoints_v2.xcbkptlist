@@ -3,4 +3,52 @@
    uuid = "230E328C-8A4A-4001-827F-2100776D3B06"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "46D87481-DF46-4E4B-8171-5C80A357968E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Camera/Camera.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "88"
+            endingLineNumber = "88"
+            landmarkName = "photoStream"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "46D87481-DF46-4E4B-8171-5C80A357968E - ddf948a9d87d0625"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; Swift.AsyncStream&lt;__C.AVCapturePhoto&gt; in Ninja.Camera.photoStream.getter : Swift.AsyncStream&lt;__C.AVCapturePhoto&gt;"
+                  moduleName = "Ninja.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/roland/Work/GoA/Aki/Work/NinjaAcademy/Ninja.swiftpm/Camera/Camera.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "88"
+                  endingLineNumber = "88">
+               </Location>
+               <Location
+                  uuid = "46D87481-DF46-4E4B-8171-5C80A357968E - 656f90c11b75ce66"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.AsyncStream&lt;__C.AVCapturePhoto&gt;.Continuation) -&gt; () in closure #1 () -&gt; Swift.AsyncStream&lt;__C.AVCapturePhoto&gt; in Ninja.Camera.photoStream.getter : Swift.AsyncStream&lt;__C.AVCapturePhoto&gt;"
+                  moduleName = "Ninja.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/roland/Work/GoA/Aki/Work/NinjaAcademy/Ninja.swiftpm/Camera/Camera.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "89"
+                  endingLineNumber = "89">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

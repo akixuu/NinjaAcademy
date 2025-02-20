@@ -35,7 +35,9 @@ class GameScene: SKScene {
     var elementButtons: [SKSpriteNode] = []
     
     var isGameOver: Bool = false
-
+    
+    var currentJutsuPose: NinjaMoves = .unknown
+    
     override func update(_ currentTime: TimeInterval) {
         
         // update labels
@@ -133,6 +135,8 @@ class GameScene: SKScene {
                 }
             }
         }
+        
+        processJutsuMove()
     }
 
     
@@ -376,6 +380,16 @@ class GameScene: SKScene {
             button.setScale(0.5)
             addChild(button)
             elementButtons.append(button)
+        }
+    }
+    
+    func processJutsuMove() {
+        let jutsuMove = AppModel.appModel.prediction
+        if jutsuMove != currentJutsuPose {
+            currentJutsuPose = jutsuMove
+            if currentJutsuPose != .unknown {
+                attackWithElement(element: currentJutsuPose.rawValue)
+            }
         }
     }
 }
