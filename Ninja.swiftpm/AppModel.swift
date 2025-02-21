@@ -6,7 +6,7 @@ final class AppModel: ObservableObject {
     static var appModel = AppModel()
     
     let camera = MLCamera()
-    let predictionTimer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
+    let predictionTimer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
     
     @Published var currentMLModel: JutsuPoseMLModel? {
         didSet {
@@ -16,6 +16,7 @@ final class AppModel: ObservableObject {
     }
     
     @Published var gameStarted = false
+    @Published var tutorialStarted = false
     
     @Published var defaultMLModel: JutsuPoseMLModel?
     @Published var availableHandPoseMLModels = Set<JutsuPoseMLModel>()

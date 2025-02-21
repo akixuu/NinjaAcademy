@@ -17,11 +17,11 @@ let package = Package(
             name: "Ninja",
             targets: ["AppModule"],
             bundleIdentifier: "com.gameofapps.Ninja",
-            teamIdentifier: "7G7257RM8J",
+            teamIdentifier: "WNUFLTYR5Q",
             displayVersion: "1.0",
             bundleVersion: "1",
-            appIcon: .placeholder(icon: .palette),
-            accentColor: .presetColor(.mint),
+            appIcon: .asset("AppIcon"),
+            accentColor: .presetColor(.indigo),
             supportedDeviceFamilies: [
                 .pad,
                 .phone
@@ -40,8 +40,8 @@ let package = Package(
             name: "AppModule",
             path: ".",
             resources: [
-              .process("Resources"),
-              .copy("Models")
+                .process("Resources"),
+                .copy("Models")
             ]
         )
     ],

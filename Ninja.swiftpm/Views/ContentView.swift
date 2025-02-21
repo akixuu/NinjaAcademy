@@ -12,8 +12,12 @@ struct ContentView: View {
         .overlay(alignment: .topLeading) {
             if appModel.gameStarted {
                 camera()
-                    .frame(width: 400, height: 300)
+                    .frame(width: 300, height: 250)
                     .padding()
+            } else if appModel.tutorialStarted {
+                camera()
+                    .frame(width: 600, height: 450)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
     }
