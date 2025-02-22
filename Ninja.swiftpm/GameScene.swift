@@ -16,7 +16,7 @@ class GameScene: SKScene {
         }
         return _scene
     }
-
+        
     var ninja: SKSpriteNode!
     var enemies: [SKSpriteNode] = []
     var attacks: [SKSpriteNode] = []
@@ -35,6 +35,15 @@ class GameScene: SKScene {
     
     var developerToggle: SKSpriteNode!
     var mlModeOn: Bool = false
+    
+    var enemySpeedBase: CGFloat = 7.0
+    var spawnTimeIntervalBase: TimeInterval = 7.0
+
+    var difficultyToggle: SKSpriteNode!
+    var currentDifficulty: String = "normal"
+    var spawnTimeIntervalMultiplier: CGFloat = 1.0
+    var spawnTimeMinimum: TimeInterval = 3.0
+    var enemySpeedMultiplier: CGFloat = 1.0
     
     var elementButtons: [SKSpriteNode] = []
     
@@ -60,7 +69,7 @@ class GameScene: SKScene {
                 
                 if enemyType == "heart" {
                     // hearts don't hurt but you lose it sooo
-                    showDialogue(text: "Oh no! You missed it...")
+                    showDialogue(text: "Oh no! You missed the heart...")
                 } else {
                     
                     lives -= 1
@@ -118,15 +127,16 @@ class GameScene: SKScene {
                                 
                                 run(SKAction.playSoundFileNamed("sfx-heart.mp3", waitForCompletion: false))
                                 
-                                showDialogue(text: "A heart! Wonderful!")
+                                let dialogue = ["A heart! Wonderful!", "Stay safe, young warrior!"].randomElement() ?? ""
+                                showDialogue(text: dialogue)
                             } else {
                                 enemiesKilled += 1
+                                run(SKAction.playSoundFileNamed("sfx-hit.mp3", waitForCompletion: false))
                                 
                                 if enemiesKilled >= 100 {
                                     gameOver(win: true)
                                 }
                                 
-                                run(SKAction.playSoundFileNamed("sfx-poof.mp3", waitForCompletion: false))
                                 
                                 if enemiesKilled % 11 == 0 && enemiesKilled != 0 {
                                     var dialogue: String?
@@ -236,6 +246,12 @@ class GameScene: SKScene {
         developerToggle.setScale(0.7)
         addChild(developerToggle)
         
+        // difficulty toggle
+        difficultyToggle = SKSpriteNode(imageNamed: "btn-difficulty-normal")
+        difficultyToggle.position = CGPoint(x: self.size.width - difficultyToggle.size.width / 2 + 20, y: developerToggle.size.height / 2 + 20)
+        difficultyToggle.setScale(0.7)
+        addChild(difficultyToggle)
+        
         // time counter
         run(SKAction.repeatForever(SKAction.sequence([
             SKAction.wait(forDuration: 1),
@@ -289,7 +305,7 @@ class GameScene: SKScene {
         let enemy: SKSpriteNode
         
         // player needs help
-        if lives < 3 && (enemiesKilled % 10 == 0) && enemiesKilled != 0 && lastHeartSpawnedAt != enemiesKilled {
+        if lives < 5 && (enemiesKilled % 8 == 0) && enemiesKilled != 0 && lastHeartSpawnedAt != enemiesKilled {
             showDialogue(text: "Sensei has sent you a recovery heart!")
             enemy = SKSpriteNode(imageNamed: "heart")
             enemy.userData = ["type": "heart"]
@@ -308,18 +324,24 @@ class GameScene: SKScene {
         }
         
         enemy.position = CGPoint(x: self.size.width + 50, y: self.size.height / 2 + horizonLevelOffset)
+        enemy.size = CGSize(width: 100, height: 100)
+        
         addChild(enemy)
         enemies.append(enemy)
         
-        let speed = max(5, 15 - (timeAlive / 10)) // gets faster
+        // enemy speed starts at 125%, but slowly reduces to base
+        let enemySpeedAdjusted = enemySpeedBase * enemySpeedMultiplier
+        let speed = max(enemySpeedAdjusted, enemySpeedAdjusted * 1.25 - (timeAlive / 20))
         let moveAction = SKAction.moveTo(x: -enemy.size.width - self.size.width, duration: TimeInterval(speed))
         let removeAction = SKAction.removeFromParent()
         let moveSequence = SKAction.sequence([moveAction, removeAction])
         
         enemy.run(moveSequence)
         
-        let intervalFactor = max(3, 7.0 - (timeAlive / 20)) // intervals also decrease
-        let randomInterval = TimeInterval(.random(in: 3...intervalFactor))
+        // spawn time intervals start from 150% of base, reducing to normal 100%
+        let spawnTimeIntervalAdjusted = spawnTimeIntervalBase * spawnTimeIntervalMultiplier
+        let intervalFactor = max(spawnTimeIntervalAdjusted, spawnTimeIntervalAdjusted * 1.50 - (timeAlive / 10))
+        let randomInterval = TimeInterval(.random(in: spawnTimeMinimum...intervalFactor))
             
         run(SKAction.wait(forDuration: randomInterval), completion: spawnEnemy)
     }
@@ -336,6 +358,8 @@ class GameScene: SKScene {
             
             if developerToggle.contains(location) {
                 toggleDeveloperMode()
+            } else if difficultyToggle.contains(location) {
+                adjustDifficulty()
             }
             
             for button in elementButtons {
@@ -347,6 +371,8 @@ class GameScene: SKScene {
     }
     
     func toggleDeveloperMode() {
+        run(SKAction.playSoundFileNamed("sfx-click.mp3", waitForCompletion: false))
+
         if mlModeOn {
             developerToggle.texture = SKTexture(imageNamed: "btn-mlmode")
             AppModel.appModel.gameStarted = false
@@ -365,9 +391,9 @@ class GameScene: SKScene {
         
         let attack = SKSpriteNode(imageNamed: "\(element)")
         attack.size = CGSize(width: 50, height: 50)
+        
         attack.position = ninja.position
         attack.userData = ["type": element]
-        print("spawned attack type \(element)")
 
         addChild(attack)
         attacks.append(attack)
@@ -375,7 +401,7 @@ class GameScene: SKScene {
         let moveAction = SKAction.moveTo(x: self.size.width + attack.size.width, duration: 2.0)
         let removeAction = SKAction.removeFromParent()
 
-        if attack.userData?["type"] as? String == "heart" {
+        if element == "heart" {
             // dont spin the hearts
             
             attack.run(SKAction.sequence([moveAction, removeAction]))
@@ -439,12 +465,48 @@ class GameScene: SKScene {
     func processJutsuMove() {
         if isGameOver { return }
         let jutsuMove = AppModel.appModel.prediction
-        print(jutsuMove.rawValue)
+        // print(jutsuMove.rawValue)
         if jutsuMove.rawValue != "unknown" && jutsuMove != currentJutsuPose {
             currentJutsuPose = jutsuMove
             if currentJutsuPose != .unknown {
                 attackWithElement(element: currentJutsuPose.rawValue)
             }
+        }
+    }
+    
+    func adjustDifficulty() {
+        run(SKAction.playSoundFileNamed("sfx-click.mp3", waitForCompletion: false))
+
+        // for speed multiplier, the higher the number, the more time the monsters will take to travel
+        // for the spawn time interval, the smaller the number, the shorter the intervals, the more spawns
+        // some of these calculations may cause an error cz i didn't check yet
+        switch currentDifficulty {
+        case "easy":
+            spawnTimeIntervalMultiplier = 1.0
+            enemySpeedMultiplier = 1.0
+            spawnTimeMinimum = 3.0
+            difficultyToggle.texture = SKTexture(imageNamed: "btn-difficulty-normal")
+            currentDifficulty = "normal"
+        case "normal":
+            spawnTimeIntervalMultiplier = 0.7
+            enemySpeedMultiplier = 0.8
+            spawnTimeMinimum = 1.5
+            difficultyToggle.texture = SKTexture(imageNamed: "btn-difficulty-hard")
+            currentDifficulty = "hard"
+        case "hard":
+            spawnTimeIntervalMultiplier = 0.3
+            enemySpeedMultiplier = 0.5
+            spawnTimeMinimum = 0.1
+            difficultyToggle.texture = SKTexture(imageNamed: "btn-difficulty-extreme")
+            currentDifficulty = "extreme"
+        case "extreme":
+            spawnTimeIntervalMultiplier = 1.2
+            enemySpeedMultiplier = 1.2
+            spawnTimeMinimum = 4.0
+            difficultyToggle.texture = SKTexture(imageNamed: "btn-difficulty-easy")
+            currentDifficulty = "easy"
+        default:
+            break
         }
     }
 }

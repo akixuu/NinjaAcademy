@@ -35,7 +35,6 @@ class GameOverScene: SKScene {
         background.size = self.size
         background.zPosition = -1
         addChild(background)
-        
     }
     
     func setupScene() {
@@ -54,11 +53,11 @@ class GameOverScene: SKScene {
         case 75..<100:
             senseiMessageText = "I have taught you everything... Sensei is very proud!"
         case 50..<75:
-            senseiMessageText =  "A true ninja is not measured by strength, but by perseverance. You\n are on your way to a ninja LEGEND!"
+            senseiMessageText =  "Excellent! A ninja is not measured by strength, but by perseverance!"
         case 30..<50:
-            senseiMessageText = "Perhaps you are ready for your black belt! Keep training, and greatness awaits."
+            senseiMessageText = "Perhaps you are ready for your black belt! Greatness awaits you."
         case 15..<30:
-            senseiMessageText = "Keep pushing forward! You are on your path to becoming a great ninja master..."
+            senseiMessageText = "Ho ho! You are on your path to becoming a great ninja master..."
         case 10..<15:
             senseiMessageText = "Continue your training! Every defeat is a lesson."
         default:
@@ -100,12 +99,12 @@ class GameOverScene: SKScene {
     
     func setupButtons() {
         replayIntroButton = SKSpriteNode(imageNamed: "btn-replayintro")
-        replayIntroButton.position = CGPoint(x: 0 + replayIntroButton.size.width / 2 - 20, y: self.size.height - replayIntroButton.size.height / 2)
+        replayIntroButton.position = CGPoint(x: self.size.width - replayIntroButton.size.width / 2 + 20, y: self.size.height - replayIntroButton.size.height / 2)
         replayIntroButton.setScale(0.7)
         addChild(replayIntroButton)
         
         cheatSheetButton = SKSpriteNode(imageNamed: "btn-cheatsheet")
-        cheatSheetButton.position = CGPoint(x: self.size.width - cheatSheetButton.size.width / 2 + 20, y: self.size.height - cheatSheetButton.size.height / 2)
+        cheatSheetButton.position = CGPoint(x: 0 + cheatSheetButton.size.width / 2 - 20, y: self.size.height - cheatSheetButton.size.height / 2)
         cheatSheetButton.setScale(0.7)
         addChild(cheatSheetButton)
         
@@ -118,24 +117,32 @@ class GameOverScene: SKScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if replayIntroButton.contains(touches.first?.location(in: self) ?? CGPoint.zero) {
             replayIntro()
+            run(SKAction.playSoundFileNamed("sfx-click.mp3", waitForCompletion: false))
         } else if cheatSheetButton.contains(touches.first?.location(in: self) ?? CGPoint.zero) {
             openCheatSheet()
         } else if retrainButton.contains(touches.self.first?.location(in: self) ?? CGPoint.zero) {
             restartGame()
+            run(SKAction.playSoundFileNamed("sfx-click.mp3", waitForCompletion: false))
         } else {
             closeCheatSheet()
         }
     }
 
     func restartGame() {
-        if cheatSheetIsOpen { return } // bad implementation
+        if cheatSheetIsOpen {
+            closeCheatSheet()
+            return
+        } // bad implementation
         let gameScene = GameScene(size: self.size)
         gameScene.scaleMode = self.scaleMode
         self.view?.presentScene(gameScene, transition: SKTransition.fade(withDuration: 0.5))
     }
     
     func replayIntro() {
-        if cheatSheetIsOpen { return } // bad implementation
+        if cheatSheetIsOpen {
+            closeCheatSheet()
+            return
+        } // bad implementation
 
         let introScene = IntroductionScene(size: self.size)
         introScene.scaleMode = self.scaleMode
@@ -144,7 +151,11 @@ class GameOverScene: SKScene {
     
     
     func openCheatSheet() {
-        if cheatSheetIsOpen { return }
+        if cheatSheetIsOpen {
+            closeCheatSheet()
+            return
+        } // bad implementation
+        run(SKAction.playSoundFileNamed("sfx-paper.mp3", waitForCompletion: false))
         
         let overlay = SKSpriteNode(color: UIColor.black.withAlphaComponent(0.7), size: self.size)
         overlay.position = CGPoint(x: size.width / 2, y: size.height / 2)
@@ -152,9 +163,10 @@ class GameOverScene: SKScene {
         overlay.name = "cheatSheetOverlay"
         addChild(overlay)
         
-        let cheatSheet = SKSpriteNode(imageNamed: "cheatSheetImage")
+        let cheatSheet = SKSpriteNode(imageNamed: "cheatsheet")
         cheatSheet.position = CGPoint(x: size.width / 2, y: size.height / 2)
         cheatSheet.zPosition = 11
+        cheatSheet.setScale(0.7)
         cheatSheet.name = "cheatSheetImage"
         addChild(cheatSheet)
         
@@ -168,6 +180,8 @@ class GameOverScene: SKScene {
     }
     
     func closeCheatSheet() {
+        run(SKAction.playSoundFileNamed("sfx-paper.mp3", waitForCompletion: false))
+
         cheatSheetIsOpen = false
         if let overlay = childNode(withName: "cheatSheetOverlay") {
             overlay.removeFromParent()

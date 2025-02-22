@@ -18,6 +18,7 @@ struct ContentView: View {
                 camera()
                     .frame(width: 600, height: 450)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .offset(y: -150)
             }
         }
     }
