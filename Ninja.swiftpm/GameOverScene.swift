@@ -133,7 +133,9 @@ class GameOverScene: SKScene {
             restartGame()
             run(SKAction.playSoundFileNamed("sfx-click.mp3", waitForCompletion: false))
         } else {
-            closeCheatSheet()
+            if cheatSheetIsOpen {
+                closeCheatSheet()
+            }
         }
     }
 
