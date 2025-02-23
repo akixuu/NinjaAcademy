@@ -466,7 +466,7 @@ class GameScene: SKScene {
         if isGameOver { return }
         let jutsuMove = AppModel.appModel.prediction
         // print(jutsuMove.rawValue)
-        if jutsuMove.rawValue != "unknown" && jutsuMove != currentJutsuPose && jutsuMove.rawValue != "default" {
+        if jutsuMove.rawValue != "unknown" && jutsuMove != currentJutsuPose && jutsuMove.rawValue != "default" { // the logic here might be a bit weird cz what if the user fails on the first and needs to do a double of the same type cz they made a mistake?
             currentJutsuPose = jutsuMove
             if currentJutsuPose != .unknown {
                 attackWithElement(element: currentJutsuPose.rawValue)
