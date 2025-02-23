@@ -8,13 +8,13 @@ import PackageDescription
 import AppleProductTypes
 
 let package = Package(
-    name: "Ninja",
+    name: "Ninja Academy",
     platforms: [
         .iOS("16.0")
     ],
     products: [
         .iOSApplication(
-            name: "Ninja",
+            name: "Ninja Academy",
             targets: ["AppModule"],
             bundleIdentifier: "com.gameofapps.Ninja",
             teamIdentifier: "WNUFLTYR5Q",

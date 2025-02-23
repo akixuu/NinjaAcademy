@@ -27,6 +27,15 @@ class GameOverScene: SKScene {
         }
         
         setupButtons()
+        setupMusic()
+    }
+    
+    func setupMusic() {
+        if let bgMusicUrl = Bundle.main.url(forResource: "music-gameover", withExtension: "mp3") {
+            let backgroundMusic = SKAudioNode(url: bgMusicUrl)
+            backgroundMusic.autoplayLooped = true
+            addChild(backgroundMusic)
+        }
     }
     
     func setupSpecial() {

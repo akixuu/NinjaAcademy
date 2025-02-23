@@ -119,7 +119,7 @@ class GameScene: SKScene {
                             attack.removeFromParent()
                             attacks.removeAll { $0 == attack }
                             
-                            playAttackAnimation(at: enemy.position, texture: enemy.texture!)
+                            playAttackAnimation(at: enemy.position, texture: SKTexture(imageNamed: "\(enemyType)-particle"))
                             
                             
                             if (enemyType == "heart") {
@@ -141,7 +141,7 @@ class GameScene: SKScene {
                                 if enemiesKilled % 11 == 0 && enemiesKilled != 0 {
                                     var dialogue: String?
                                     
-                                    if timeAlive>65 { // two pools of messages based on time for variety
+                                    if timeAlive>85 { // two pools of messages based on time for variety
                                         dialogue  = ["You are the pride of our clan!", "You are on fire!", "Remember your training!", "Watch out, they get faster!", "Victory comes at a 100 exorcisms...", "Sensei is thrilled!", "Sensei is getting nostalgic... Ho ho ho!", "You are doing better than when I first started! Ho ho!"].randomElement()
                                     } else {
                                         dialogue = ["Beware, they slowly increase in variety!", "Ho ho... You are learning quite fast...", "Sensei is right here, he is merely camouflaged!", "Don't worry, sensei will pick you up if you get too hurt."].randomElement()
@@ -466,7 +466,7 @@ class GameScene: SKScene {
         if isGameOver { return }
         let jutsuMove = AppModel.appModel.prediction
         // print(jutsuMove.rawValue)
-        if jutsuMove.rawValue != "unknown" && jutsuMove != currentJutsuPose {
+        if jutsuMove.rawValue != "unknown" && jutsuMove != currentJutsuPose && jutsuMove.rawValue != "default" {
             currentJutsuPose = jutsuMove
             if currentJutsuPose != .unknown {
                 attackWithElement(element: currentJutsuPose.rawValue)

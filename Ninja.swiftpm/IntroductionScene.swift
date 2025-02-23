@@ -15,6 +15,7 @@ class IntroductionScene: SKScene {
     var dialogueLabel: SKLabelNode!
     var tapToContinueLabel: SKLabelNode!
     var scrollImage: SKSpriteNode!
+    var heartJutsuImage: SKSpriteNode!
     
     var skipIntroButton: SKSpriteNode!
     
@@ -49,7 +50,7 @@ class IntroductionScene: SKScene {
     var ranScene = 0
     override func update(_ currentTime: TimeInterval) {
         
-        if ranScene != currentDialogueIndex {
+        if ranScene != currentDialogueIndex { // bad implementation but whatever!!!
             switch currentDialogueIndex {
             case 1:
                 ninja.xScale = -ninja.xScale
@@ -62,6 +63,10 @@ class IntroductionScene: SKScene {
             case 13:
                 AppModel.appModel.tutorialStarted = false
                 break
+            case 15:
+                heartJutsuImage.isHidden = false
+            case 16:
+                heartJutsuImage.isHidden = true
             default:
                 break
             }
@@ -131,20 +136,21 @@ class IntroductionScene: SKScene {
         scrollImage.setScale(0.7)
         scrollImage.isHidden = true
         addChild(scrollImage)
+        
+        heartJutsuImage = SKSpriteNode(imageNamed: "heart-jutsu")
+        heartJutsuImage.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        heartJutsuImage.setScale(1.6)
+        heartJutsuImage.isHidden = true
+        addChild(heartJutsuImage)
     }
     
     func startCutscene() {
-        // FIXME: how to make it wait until animations are done? currently, you can still tap on the screen when the animations are still playing...
         
         // player (ninja) comes walking in
-        let walkInAction = SKAction.move(to: CGPoint(x: size.width * 0.8, y: size.height * 0.27), duration: 3)
-        
-        // FIXME: footsteps continually play
-        let walkingSoundDuration = walkInAction.duration
-        let walkingSound = SKAction.playSoundFileNamed("sfx-footsteps.mp3", waitForCompletion: false)
-        let waitForSound = SKAction.wait(forDuration: walkingSoundDuration)
-        let stopSoundAction = SKAction.run { self.run(SKAction.stop()) }
-        let soundSequence = SKAction.sequence([walkInAction, walkingSound, waitForSound, stopSoundAction])
+            let soundSequence = SKAction.sequence([
+            SKAction.playSoundFileNamed("sfx-footsteps.mp3", waitForCompletion: false),
+            SKAction.move(to: CGPoint(x: size.width * 0.8, y: size.height * 0.27), duration: 3)
+        ])
         ninja.run(soundSequence)
         
         // sensei comes flying in

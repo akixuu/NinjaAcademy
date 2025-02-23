@@ -6,7 +6,7 @@ final class AppModel: ObservableObject {
     static var appModel = AppModel()
     
     let camera = MLCamera()
-    let predictionTimer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+    let predictionTimer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect() // lower val for faster devices
     
     @Published var currentMLModel: JutsuPoseMLModel? {
         didSet {
